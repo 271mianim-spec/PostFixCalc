@@ -23,9 +23,52 @@ public class PostfixEvaluator {
         //         Catch stack underflow/overflow or check before operations.
         // Close the Scanner when you are finished.
 
-        tokens.nextLine();
+        tokens.useDelimiter(" ");
+
+        while (tokens.hasNext()) {
+            String token = tokens.next().trim();
+            if (token.isEmpty()) {
+                continue;
+            }
+
+
+            try {
+                int number = Integer.parseInt(token);
+                stack.push(number);
+            } catch (NumberFormatException e) {
+                int num1 = 0;
+                int num2 = 0;
+                try {
+                    num1 = stack.top();
+                    stack.pop();
+                    num2 = stack.top();
+                    stack.pop();
+                } catch (StackUnderflowException ex) {
+                    throw new PostFixException("Illicit Expression");
+                }
+
+                if (token.equals("+")) {
+                    stack.push(num1 + num2);
+                } else if (token.equals("-")) {
+                    stack.push(num1 - num2);
+                }  else if (token.equals("*")) {
+                    stack.push(num1 * num2);
+                } else if (token.equals("/")) {
+                    stack.push(num1 / num2);
+                }
+            }
+
+        }
 
         tokens.close();
+
+        int top = stack.top();
+        stack.pop();
+        if (stack.isEmpty()) {
+            return top;
+        }
+
+
         throw new UnsupportedOperationException("TODO: implement postfix evaluation");
     }
 }
