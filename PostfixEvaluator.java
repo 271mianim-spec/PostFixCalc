@@ -35,6 +35,8 @@ public class PostfixEvaluator {
             try {
                 int number = Integer.parseInt(token);
                 stack.push(number);
+            } catch (StackOverflowError e) {
+                throw new PostFixException("Overflow Error");
             } catch (NumberFormatException e) {
                 int num1 = 0;
                 int num2 = 0;
@@ -50,25 +52,29 @@ public class PostfixEvaluator {
                 if (token.equals("+")) {
                     stack.push(num1 + num2);
                 } else if (token.equals("-")) {
-                    stack.push(num1 - num2);
+                    stack.push(num2 - num1);
                 }  else if (token.equals("*")) {
                     stack.push(num1 * num2);
                 } else if (token.equals("/")) {
-                    stack.push(num1 / num2);
+                    stack.push(num2 / num1);
+                } else {
+                    throw new PostFixException("Illegal Expression");
                 }
             }
-
         }
 
         tokens.close();
+
+        if (stack.isEmpty()) {
+            throw new PostFixException("Empty Expression");
+        }
 
         int top = stack.top();
         stack.pop();
         if (stack.isEmpty()) {
             return top;
+        } else {
+            throw new PostFixException("Illicit Expression");
         }
-
-
-        throw new UnsupportedOperationException("TODO: implement postfix evaluation");
     }
 }
